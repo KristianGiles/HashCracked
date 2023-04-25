@@ -18,3 +18,4 @@ To Do List:
 - Dynamic Output File Name
 - More Hashing Algorithms
 - Threading
+- Salting
