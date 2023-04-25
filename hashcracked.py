@@ -1,8 +1,9 @@
 ## Program Name: HashCracked
-## Start Date: 25-04-2023
+## Start Date: 09-04-2023
+## Last Edit Date: 25-04-2023
 ## Author: Kristian Giles
 ## Description: HashCracked is a program that takes hashes from a file or the command line and attempts to crack them using a supplied word list.
-## Version: 1.0
+## Version: 1.1
 
 ## Libraries
 import hashlib
