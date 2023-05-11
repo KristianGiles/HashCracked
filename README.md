@@ -1,5 +1,4 @@
 # HashCracked
-
 HashCracked.py is a hash cracking program developed in Python.
 
 This program currently supports 4 different hashing algorithms:
