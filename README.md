@@ -5,7 +5,8 @@ This program currently supports 4 different hashing algorithms:
 1. MD5
 2. SHA1
 3. SHA256
-4. NTLM
+4. SHA512
+5. NTLM
 
 It has the ability to take in either a single hash on the command line, or a text file with hashes in it, one hash to a line.
 
