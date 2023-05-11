@@ -1,15 +1,16 @@
 ## Program Name: HashCracked
 ## Start Date: 09-04-2023
-## Last Edit Date: 25-04-2023
+## Last Edit Date: 11-05-2023
 ## Author: Kristian Giles
 ## Description: HashCracked is a program that takes hashes from a file or the command line and attempts to crack them using a supplied word list.
-## Version: 1.1
+## Version: 1.2
 
 ## Libraries
 import hashlib
 import binascii
 import sys
 import argparse
+import time
 
 ## Function to test that all required arguments are present.
 def kill_function(arg1, arg2, test):
@@ -19,8 +20,8 @@ def kill_function(arg1, arg2, test):
         return 1
 
 ## Writing the cracked_passwords list to a text file to output the passwords.
-def hashes_to_file(list):
-    with open("cracked_passwords.txt", "w") as hash_combo:
+def hashes_to_file(list, file_name):
+    with open(file_name, "w") as hash_combo:
         for line in list:
             hash_combo.write(line)
             hash_combo.write("\n")
@@ -46,7 +47,8 @@ parser.add_argument("wordlist", help = "The wordlist the program will use to try
 ## Arguments for hash type.
 type_group.add_argument("-m", "--md5", help = "This dictates that the inputted string or file are stored as md5 hashes", action = "store_true")
 type_group.add_argument("-s1", "--sha1", help = "This dictates that the inputted string or file are stored as sha1 hashes", action = "store_true")
-type_group.add_argument("-s2", "--sha256", help = "This dictates that the inputted string or file are stored as sha256 hashes", action = "store_true")
+type_group.add_argument("-s256", "--sha256", help = "This dictates that the inputted string or file are stored as sha256 hashes", action = "store_true")
+type_group.add_argument("-s512", "--sha512", help = "This dictates that the inputted string or file are stored as sha512 hashes", action = "store_true")
 type_group.add_argument("-n", "--ntlm", help = "This dictates that the inputted string or file are stored as ntlm hashes", action = "store_true")
 
 ## Reassigning argument parser to variable.
@@ -58,6 +60,7 @@ text_status = args.text
 md5_status = args.md5
 sha1_status = args.sha1
 sha256_status = args.sha256
+sha512_status = args.sha512
 ntlm_status = args.ntlm
 
 ## Testing to make sure only one input is given, either command line or a text file.
@@ -123,6 +126,13 @@ cracked_passwords = []
 ## Setting the length of the list to a variable.
 hash_length = len(hash_list)
 
+## Grabbing the current time to append to cracked_passwords for the output file name
+current_time = time.localtime()
+
+padding = time.strftime("%H%M%S", current_time)
+
+file_name = "cracked_passwords" + padding + ".txt"
+
 ## Detecting the hash type via the inputted argument and converting the word in the wordlist to said hash type for comparison.
 if md5_status == True:
     for pw in wordlist:
@@ -141,7 +151,7 @@ if md5_status == True:
 
                 ## Detecting if the hash list is now empty, if it is the cracked_passwords list is written to a file and closes all the files used.
                 if hash_length == 0:
-                    hash_combo = hashes_to_file(cracked_passwords)
+                    hash_combo = hashes_to_file(cracked_passwords, file_name)
                     wordlist.close()
                     hash_combo.close()
                     text.close()
@@ -164,7 +174,7 @@ if sha1_status == True:
 
                 ## Detecting if the hash list is now empty, if it is the cracked_passwords list is written to a file and closes all the files used.
                 if hash_length == 0:
-                    hash_combo = hashes_to_file(cracked_passwords)
+                    hash_combo = hashes_to_file(cracked_passwords, file_name)
                     wordlist.close()
                     hash_combo.close()
                     text.close()
@@ -188,7 +198,31 @@ if sha256_status == True:
 
                 ## Detecting if the hash list is now empty, if it is the cracked_passwords list is written to a file and closes all the files used.
                 if hash_length == 0:
-                    hash_combo = hashes_to_file(cracked_passwords)
+                    hash_combo = hashes_to_file(cracked_passwords, file_name)
+                    wordlist.close()
+                    hash_combo.close()
+                    text.close()
+                    quit(3)
+
+## Detecting the hash type via the inputted argument and converting the word in the wordlist to said hash type for comparison.
+if sha512_status == True:
+    for pw in wordlist:
+        for hash in hash_list:
+            hash = hash.strip()
+            pw = pw.strip()
+            password = hashlib.sha512(pw.encode())
+            password = password.hexdigest()
+
+            ## Comparing the hash of the item in the wordlist to the hash in the hash list, if they are the same it is saved to our cracked_passwords list.
+            if password == hash:
+                result = hash + ":" + pw
+                print(result)
+                cracked_passwords.append(result)
+                hash_length -= 1
+
+                ## Detecting if the hash list is now empty, if it is the cracked_passwords list is written to a file and closes all the files used.
+                if hash_length == 0:
+                    hash_combo = hashes_to_file(cracked_passwords, file_name)
                     wordlist.close()
                     hash_combo.close()
                     text.close()
@@ -212,7 +246,7 @@ if ntlm_status == True:
 
                 ## Detecting if the hash list is now empty, if it is the cracked_passwords list is written to a file and closes all the files used.
                 if hash_length == 0:
-                    hash_combo = hashes_to_file(cracked_passwords)
+                    hash_combo = hashes_to_file(cracked_passwords, file_name)
                     wordlist.close()
                     hash_combo.close()
                     text.close()
