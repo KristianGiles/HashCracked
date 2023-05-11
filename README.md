@@ -15,7 +15,6 @@ It then takes in a wordlist file and will attempt to crack the supplied hash(es)
 This is still in development.
 
 To Do List:
-- Dynamic Output File Name
 - More Hashing Algorithms
 - Threading
 - Salting
